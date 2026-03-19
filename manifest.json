@@ -1,0 +1,47 @@
+{
+    "manifest_version": 3,
+    "name": "Claude RTL",
+    "version": "1.0",
+    "description": "Inject custom RTL styles and layout adjustments into Claude.ai",
+    "permissions": [
+        "activeTab",
+        "storage"
+    ],
+    "host_permissions": [
+        "https://claude.ai/*"
+    ],
+    "icons": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Claude RTL",
+        "default_icon": "icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://claude.ai/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "main-rtl.css",
+                "code-rtl.css",
+                "big-text.css",
+                "extra-width.css"
+            ],
+            "matches": [
+                "https://claude.ai/*"
+            ]
+        }
+    ]
+}

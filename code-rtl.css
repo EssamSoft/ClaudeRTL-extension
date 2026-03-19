@@ -1,0 +1,6 @@
+/* === Force Code RTL === */
+pre,
+code {
+    direction: rtl;
+    text-align: right;
+}
