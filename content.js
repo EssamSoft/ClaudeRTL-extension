@@ -47,7 +47,23 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 });
 
-// 2. Load and apply stored state as soon as the page loads
+// 2. React to storage changes so toggles apply live without tab messaging.
+//    Storage is the single source of truth; the popup only writes to it.
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== 'local') return;
+  const keys = Object.keys(CSS_FILES);
+  if (!keys.some(key => key in changes)) return;
+
+  chrome.storage.local.get(keys, (state) => {
+    if (chrome.runtime.lastError) {
+      console.error('Extension storage error:', chrome.runtime.lastError);
+      return;
+    }
+    applyStyles(state);
+  });
+});
+
+// 3. Load and apply stored state as soon as the page loads
 try {
   const keys = Object.keys(CSS_FILES);
   chrome.storage.local.get(keys, (state) => {
