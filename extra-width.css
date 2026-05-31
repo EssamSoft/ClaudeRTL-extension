@@ -1,5 +1,0 @@
-/* === Extra Width === */
-.w-full.max-w-3xl,
-[class*="max-w-"] {
-    max-width: 95vw !important;
-}

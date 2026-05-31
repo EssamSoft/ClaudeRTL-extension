@@ -46,9 +46,7 @@ async function init() {
 
             // Listen for user changes
             el.addEventListener('change', () => {
-                if (tab && tab.id) {
-                    saveAndApply(tab.id);
-                }
+                saveState();
             });
         });
     } catch (err) {
@@ -57,10 +55,12 @@ async function init() {
 }
 
 /**
- * Saves current toggle state to storage and alerts the content script
- * @param {number} tabId 
+ * Saves current toggle state to storage.
+ * The content script observes chrome.storage.onChanged and applies the styles,
+ * so no tab messaging is needed (which avoids "Receiving end does not exist"
+ * when a tab has no live content script, e.g. after reloading the extension).
  */
-async function saveAndApply(tabId) {
+async function saveState() {
     const state = {};
     KEYS.forEach(key => {
         const el = document.getElementById(key);
@@ -68,11 +68,8 @@ async function saveAndApply(tabId) {
     });
 
     try {
-        // Save to local storage
+        // Storage is the single source of truth; live tabs react via onChanged.
         await chrome.storage.local.set(state);
-
-        // Broadcast state change to the content script in the active tab
-        await chrome.tabs.sendMessage(tabId, { action: 'applyStyles', state });
 
         // Show success indicator
         const statusEl = document.getElementById('status');
@@ -83,7 +80,7 @@ async function saveAndApply(tabId) {
             }, 500);
         }
     } catch (err) {
-        console.error('Failed to save or apply state:', err);
+        console.error('Failed to save state:', err);
     }
 }
 

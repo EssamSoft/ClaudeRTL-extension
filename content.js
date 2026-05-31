@@ -1,62 +1,64 @@
-const CSS_FILES = {
-  'rtl': 'main-rtl.css',
-  'code-rtl': 'code-rtl.css',
-  'big-text': 'big-text.css',
-  'extra-width': 'extra-width.css'
+'use strict';
+
+/* =========================================================================
+   Content script
+   - Reflects the saved toggle state as attributes on <html>.
+   - The merged stylesheet (injected by the background worker) gates every
+     rule on these attributes, so toggling = adding/removing one attribute.
+   - Storage is the single source of truth; the popup only writes to it.
+   ========================================================================= */
+
+// Toggle key (in chrome.storage.local) -> attribute on <html>.
+const FEATURES = {
+  'rtl': 'data-rtl',
+  'code-rtl': 'data-code-rtl',
+  'big-text': 'data-big-text',
+  'extra-width': 'data-extra-width'
 };
 
-const LINK_IDS = {
-  'rtl': 'claude-styler-link-rtl',
-  'code-rtl': 'claude-styler-link-code-rtl',
-  'big-text': 'claude-styler-link-big-text',
-  'extra-width': 'claude-styler-link-extra-width'
-};
+const KEYS = Object.keys(FEATURES);
 
-function applyStyles(state) {
+/**
+ * Reflect the given state onto <html> as data-* attributes.
+ * @param {Record<string, boolean>} state
+ */
+function applyState(state) {
   if (!state) return;
-
-  Object.keys(CSS_FILES).forEach(key => {
-    const linkId = LINK_IDS[key];
-    let el = document.getElementById(linkId);
-
-    if (state[key]) {
-      // Create link element if not already present
-      if (!el) {
-        el = document.createElement('link');
-        el.id = linkId;
-        el.rel = 'stylesheet';
-        el.type = 'text/css';
-        // Needs web_accessible_resources in manifest.json to work
-        el.href = chrome.runtime.getURL(CSS_FILES[key]);
-        document.head.appendChild(el);
-      }
-    } else {
-      // Remove link element when toggled off
-      if (el) {
-        el.remove();
-      }
-    }
+  const root = document.documentElement;
+  KEYS.forEach(key => {
+    if (state[key]) root.setAttribute(FEATURES[key], '');
+    else root.removeAttribute(FEATURES[key]);
   });
 }
 
-// 1. Listen for dynamic message from popup toggles
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.action === 'applyStyles' && msg.state) {
-    applyStyles(msg.state);
-    sendResponse({ success: true });
-  }
-});
-
-// 2. Load and apply stored state as soon as the page loads
-try {
-  const keys = Object.keys(CSS_FILES);
-  chrome.storage.local.get(keys, (state) => {
+/** Read the saved state from storage and reflect it onto <html>. */
+function syncFromStorage() {
+  chrome.storage.local.get(KEYS, (state) => {
     if (chrome.runtime.lastError) {
-      console.error('Extension storage error:', chrome.runtime.lastError);
+      console.error('Claude RTL: storage error:', chrome.runtime.lastError);
       return;
     }
-    applyStyles(state);
+    applyState(state);
   });
-} catch (err) {
-  console.error('Failed to load initial extension state:', err);
 }
+
+// 1. Apply saved state on load.
+try {
+  syncFromStorage();
+} catch (err) {
+  console.error('Claude RTL: failed to load initial state:', err);
+}
+
+// 2. Ask the background worker to inject the stylesheet into this tab.
+try {
+  chrome.runtime.sendMessage({ action: 'injectCss' });
+} catch (err) {
+  console.error('Claude RTL: failed to request CSS injection:', err);
+}
+
+// 3. React to toggle changes live, without any tab messaging.
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== 'local') return;
+  if (!KEYS.some(key => key in changes)) return;
+  syncFromStorage();
+});
