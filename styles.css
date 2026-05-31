@@ -1,0 +1,55 @@
+/* =========================================================================
+   Claude RTL — merged stylesheet
+   Every block is gated by an attribute on <html> that the content script
+   toggles (data-rtl, data-code-rtl, data-big-text, data-extra-width).
+   This file is hosted remotely AND bundled as a fallback. Keep it CSS-only.
+   ========================================================================= */
+
+/* === Main RTL === */
+html[data-rtl] div [data-test-render-count] {
+    direction: rtl;
+}
+
+html[data-rtl] .mx-auto.flex.size-full.max-w-3xl.flex-col.md\:px-2,
+html[data-rtl] .sticky.bottom-0.mx-auto.w-full.pt-6,
+html[data-rtl] .font-claude-message {
+    direction: rtl;
+}
+
+html[data-rtl] body div.ProseMirror ul {
+    list-style-type: unset;
+    padding-right: 2rem !important;
+    padding-left: 0 !important;
+}
+
+html[data-rtl] table,
+html[data-rtl] pre {
+    direction: ltr;
+}
+
+/* === Force Code RTL === */
+html[data-code-rtl] pre,
+html[data-code-rtl] code {
+    direction: rtl;
+    text-align: right;
+}
+
+/* === Bigger Text === */
+html[data-big-text] main p,
+html[data-big-text] main li,
+html[data-big-text] main td {
+    font-size: 18px !important;
+    line-height: 1.8 !important;
+}
+
+html[data-big-text] p,
+html[data-big-text] li,
+html[data-big-text] i {
+    font-size: 130%;
+}
+
+/* === Extra Width === */
+html[data-extra-width] .w-full.max-w-3xl,
+html[data-extra-width] [class*="max-w-"] {
+    max-width: 95vw !important;
+}
