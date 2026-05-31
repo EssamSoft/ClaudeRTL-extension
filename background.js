@@ -11,7 +11,7 @@
 // ⚠️ ACTION REQUIRED: replace <user>/<repo> with your public GitHub repo.
 //    Format: https://raw.githubusercontent.com/<user>/<repo>/<branch>/styles.css
 const CSS_URL =
-  'https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO/main/styles.css';
+  'https://raw.githubusercontent.com/EssamSoft/ClaudeRTL-extension/main/styles.css';
 
 const CACHE_KEY = 'cssCache';
 
