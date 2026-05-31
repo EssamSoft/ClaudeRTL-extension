@@ -27,6 +27,10 @@ html[data-rtl] pre {
     direction: ltr;
 }
 
+html[data-rtl] .text-left {
+    text-align: right !important;
+}
+
 /* === Force Code RTL === */
 html[data-code-rtl] pre,
 html[data-code-rtl] code {
