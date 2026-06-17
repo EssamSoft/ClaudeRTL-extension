@@ -13,6 +13,7 @@ const FEATURES = {
   'rtl': 'data-rtl',
   'code-rtl': 'data-code-rtl',
   'big-text': 'data-big-text',
+  'input-ltr': 'data-input-ltr',
   'extra-width': 'data-extra-width'
 };
 

@@ -57,3 +57,8 @@ html[data-extra-width] .w-full.max-w-3xl,
 html[data-extra-width] [class*="max-w-"] {
     max-width: 95vw !important;
 }
+
+/* === Input RTL === */
+html[data-input-ltr] .tiptap.ProseMirror {
+    direction: ltr;
+}
