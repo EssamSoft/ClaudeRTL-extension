@@ -37,6 +37,32 @@
       border-bottom: none;
     }
 
+    .slider-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .range-container {
+      width: 100%;
+      padding: 4px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #ed703a;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+
     .switch {
       position: relative;
       width: 40px;
@@ -132,12 +158,16 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="toggle-row">
-      <span>Bigger Text</span>
-      <label class="switch">
-        <input type="checkbox" id="big-text" aria-label="Toggle Bigger Text">
-        <span class="slider"></span>
-      </label>
+    <div class="toggle-row slider-row">
+      <span>Font Size</span>
+      <div class="range-container">
+        <input type="range" id="font-size" min="1" max="3" value="1" aria-label="Font Size">
+        <div class="range-labels">
+          <span>Normal</span>
+          <span>Large</span>
+          <span>Extra Large</span>
+        </div>
+      </div>
     </div>
     <div class="toggle-row">
       <span>Input LTR</span>

@@ -12,7 +12,7 @@
 const FEATURES = {
   'rtl': 'data-rtl',
   'code-rtl': 'data-code-rtl',
-  'big-text': 'data-big-text',
+  'font-size': 'data-font-size',
   'input-ltr': 'data-input-ltr',
   'extra-width': 'data-extra-width'
 };
@@ -21,14 +21,19 @@ const KEYS = Object.keys(FEATURES);
 
 /**
  * Reflect the given state onto <html> as data-* attributes.
- * @param {Record<string, boolean>} state
+ * @param {Record<string, any>} state
  */
 function applyState(state) {
   if (!state) return;
   const root = document.documentElement;
   KEYS.forEach(key => {
-    if (state[key]) root.setAttribute(FEATURES[key], '');
-    else root.removeAttribute(FEATURES[key]);
+    if (key === 'font-size') {
+      const val = state[key] || 1;
+      root.setAttribute(FEATURES[key], val);
+    } else {
+      if (state[key]) root.setAttribute(FEATURES[key], '');
+      else root.removeAttribute(FEATURES[key]);
+    }
   });
 }
 

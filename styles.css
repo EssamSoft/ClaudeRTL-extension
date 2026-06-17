@@ -22,14 +22,32 @@ html[data-rtl] body div.ProseMirror ul {
     padding-left: 0 !important;
 }
 
-html[data-rtl] table,
 html[data-rtl] pre {
     direction: ltr;
 }
 
+html[data-rtl] td,
 html[data-rtl] .text-left {
     text-align: right !important;
 }
+
+html[data-rtl] .border-l-4 {
+    border-right-style: var(--tw-border-style);
+    border-right-width: 4px !important;
+    border-left-style: none;
+}
+
+html[data-rtl] .\[\&_\.standard-markdown_\:is\(p\,blockquote\,ul\,ol\,h1\,h2\,h3\,h4\,h5\,h6\)\]\:pr-8 .standard-markdown :is(p, blockquote, ul, ol, h1, h2, h3, h4, h5, h6) {
+    padding-left: 0;
+    padding-right: calc(var(--spacing) * 8) !important;
+}
+
+html[dir-rtl] .\[\&_\.standard-markdown_\:is\(p\,blockquote\,h1\,h2\,h3\,h4\,h5\,h6\)\]\:pl-2 .standard-markdown :is(p, blockquote, h1, h2, h3, h4, h5, h6) {
+    padding-right: 0;
+    padding-left: calc(var(--spacing) * 2) !important;
+}
+
+
 
 /* === Force Code RTL === */
 html[data-code-rtl] pre,
@@ -38,18 +56,33 @@ html[data-code-rtl] code {
     text-align: right;
 }
 
-/* === Bigger Text === */
-html[data-big-text] main p,
-html[data-big-text] main li,
-html[data-big-text] main td {
-    font-size: 18px !important;
-    line-height: 1.8 !important;
+/* === Font Size Levels === */
+/* Level 2: Large */
+html[data-font-size="2"] main p,
+html[data-font-size="2"] main li,
+html[data-font-size="2"] main td {
+    font-size: 30px;
+    line-height: 2.0;
 }
 
-html[data-big-text] p,
-html[data-big-text] li,
-html[data-big-text] i {
-    font-size: 130%;
+html[data-font-size="2"] p,
+html[data-font-size="2"] li,
+html[data-font-size="2"] i {
+    font-size: 170%;
+}
+
+/* Level 3: Extra Large */
+html[data-font-size="3"] main p,
+html[data-font-size="3"] main li,
+html[data-font-size="3"] main td {
+    font-size: 50px !important;
+    line-height: 2.7 !important;
+}
+
+html[data-font-size="3"] p,
+html[data-font-size="3"] li,
+html[data-font-size="3"] i {
+    font-size: 220%;
 }
 
 /* === Extra Width === */
@@ -60,5 +93,5 @@ html[data-extra-width] [class*="max-w-"] {
 
 /* === Input RTL === */
 html[data-input-ltr] .tiptap.ProseMirror {
-    direction: ltr;
+    direction: ltr !important;
 }

@@ -14,6 +14,7 @@ const CSS_URL =
   'https://raw.githubusercontent.com/EssamSoft/ClaudeRTL-extension/main/styles.css';
 
 const CACHE_KEY = 'cssCache';
+const DEV_MODE = true; // Set to true to bypass cache and use local styles.css during development
 
 /**
  * Fetch the remote CSS text. Allowed (and CORS-exempt) because the extension
@@ -40,6 +41,9 @@ async function getBundledCss() {
  * @returns {Promise<string>}
  */
 async function getCss() {
+  if (DEV_MODE) {
+    return await getBundledCss();
+  }
   const { [CACHE_KEY]: cached } = await chrome.storage.local.get(CACHE_KEY);
   if (cached && cached.trim()) return cached;
   return await getBundledCss();
@@ -50,6 +54,7 @@ async function getCss() {
  * failure (offline / server down / empty response). Applies on next load.
  */
 async function refreshCss() {
+  if (DEV_MODE) return;
   try {
     const css = await fetchRemoteCss();
     if (css && css.trim()) {

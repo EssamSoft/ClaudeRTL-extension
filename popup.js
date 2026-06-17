@@ -1,6 +1,6 @@
 'use strict';
 
-const KEYS = ['rtl', 'code-rtl', 'big-text', 'extra-width'];
+const KEYS = ['rtl', 'code-rtl', 'input-ltr', 'extra-width', 'font-size'];
 
 /**
  * Gets the current active tab
@@ -42,12 +42,19 @@ async function init() {
             if (!el) return;
 
             // Update UI with stored state
-            if (stored[key]) el.checked = true;
-
-            // Listen for user changes
-            el.addEventListener('change', () => {
-                saveState();
-            });
+            if (key === 'font-size') {
+                el.value = stored[key] || 1;
+                // Listen for slider changes
+                el.addEventListener('input', () => {
+                    saveState();
+                });
+            } else {
+                if (stored[key]) el.checked = true;
+                // Listen for checkbox changes
+                el.addEventListener('change', () => {
+                    saveState();
+                });
+            }
         });
     } catch (err) {
         console.error('Failed to initialize state from storage:', err);
@@ -64,7 +71,11 @@ async function saveState() {
     const state = {};
     KEYS.forEach(key => {
         const el = document.getElementById(key);
-        state[key] = el ? el.checked : false;
+        if (el) {
+            state[key] = key === 'font-size' ? parseInt(el.value, 10) : el.checked;
+        } else {
+            state[key] = key === 'font-size' ? 1 : false;
+        }
     });
 
     try {
